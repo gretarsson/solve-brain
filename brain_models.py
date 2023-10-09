@@ -500,7 +500,7 @@ def solve_dde(DDE, y0, W, t_span=(0,10), step=10**-4, atol=10**-6, rtol=10**-4, 
     sols = np.empty((parN), dtype='object')
 
     # set number of nodes and flatten values of adjacency matrix
-    N = DDE.N
+    N = W.shape[0]
     flat_num_W = list(W.flatten())
 
     # set integration parameters
