@@ -2,6 +2,7 @@ import numpy as np
 from scipy.signal import hilbert
 from scipy.signal import butter, sosfilt, sosfreqz
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 # -----------------------------------------
 # Here we include functions for analyzing
