@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.signal import hilbert
 from scipy.signal import butter, sosfilt, sosfreqz
+import matplotlib.pyplot as plt
 
 # -----------------------------------------
 # Here we include functions for analyzing
