@@ -106,3 +106,113 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
     y = sosfilt(sos, data)
     return y
 
+
+
+
+# --------------------------------------
+# plot average functional connectomes
+# --------------------------------------
+def plot_functional_connectomes(avg_F, t_stamps=False, bands=[], region_names=False, \
+        colours=False, regions=False, coordinates=False, vmax=False, title=False, \
+        edge_threshold='90.0%'):
+    from itertools import chain
+    from nilearn import plotting
+    from matplotlib.colors import ListedColormap
+    # check if we have a single connectome
+    if len(avg_F.shape) == 2:
+        avg_F = np.array([[[avg_F]]]) 
+
+    # initialize
+    B, I, L, N, N = avg_F.shape
+    figs = []
+    brain_figs = []
+    
+    # if colours, rearrange by node instead of region
+    node_colours = []
+    if colours is not False and regions is not False:
+        for node in range(N):
+            for r, region in enumerate(regions):
+                if node in region:
+                    node_colours.append(colours[r])
+    else:
+        node_colours = ['blue' for _ in range(N)]
+        
+
+    # if regions, reorganize matrices in the order of regions 2D list
+    if regions is not False:
+        node_map = list(chain(*regions))
+        for b in range(B):
+            for t in range(I):
+                for l in range(L):
+                    i = 0
+                    for region in regions:
+                        for node in region:
+                            avg_F[b,t,l][[i,node], [i,node]] = avg_F[b,t,l][[node,i], [node,i]]
+                            i += 1
+                            if i == N:  # if node is in two regions, we need to break
+                                break
+    else:
+        node_map = [n for n in range(N)]
+
+    # rearrange region names after region
+    if region_names is not False:
+        new_region_names = []
+        for n in range(N):
+            new_region_names.append(region_names[node_map[n]])
+    
+    # iterate through each band and time point
+    for b in range(B):
+        if not vmax:
+            vmax = np.amax(avg_F[b])
+        for i in reversed(range(I)):
+            # set plotting settings
+            fig = plt.figure() 
+            if title:
+                plt.title(title)
+            elif len(bands) and len(t_stamps):
+                plt.title(f'band = {bands[b]}, t = {round(t_stamps[i],1)}')
+            else:
+                plt.title(f'b = {b}, i = {i}')
+
+            # compute average functional matrix
+            F = np.mean(avg_F[b,i], axis=0)
+
+            # plot functional matrix as heatmap, either with regions names or without
+            if region_names is not False:
+                heatmap = sns.heatmap(F, xticklabels=new_region_names, yticklabels=new_region_names, \
+                        vmin=0, vmax=vmax)
+                heatmap.set_xticklabels(heatmap.get_xmajorticklabels(), fontsize = 4)
+                heatmap.set_yticklabels(heatmap.get_ymajorticklabels(), fontsize = 4)
+                if colours is not False:
+                    for i, ticklabel in enumerate(heatmap.xaxis.get_majorticklabels()):
+                        ticklabel.set_color(node_colours[node_map[i]])
+                    for i, ticklabel in enumerate(heatmap.yaxis.get_majorticklabels()):
+                        ticklabel.set_color(node_colours[node_map[i]])
+            else:
+                heatmap = sns.heatmap(F, vmin=0, vmax=vmax)
+
+            # append figure to list of figures
+            figs.append(fig)
+            #plt.close()
+
+	    # map functional connectome unto brain slices
+            brain_map = None
+            if coordinates is not False:
+                # brain map settings
+                node_size = 20
+                cmap = ListedColormap(sns.color_palette("rocket"),1000)
+                cmap = plt.get_cmap('magma')
+                alpha_brain = 0.5
+                alpha_edge = 0.5
+                colorbar = True
+
+                brain_map = plotting.plot_connectome(F, coordinates, edge_threshold=edge_threshold, \
+                         node_color=node_colours, \
+                        node_size=node_size, edge_cmap=cmap, edge_vmin=np.amin(F), edge_vmax=vmax, \
+                        alpha=alpha_brain, colorbar=colorbar, edge_kwargs={'alpha':alpha_edge})
+                #brain_map.close() 
+            # append figure to list of figures
+            brain_figs.append(brain_map)
+
+    # we're done
+    return figs, brain_figs
