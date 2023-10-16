@@ -61,7 +61,7 @@ def compute_phase_coherence(data):
     """
     # Compute the complex phases of the oscillators
     #phases = np.exp(1j * data)
-    phases = signal.hilbert(data)
+    phases = hilbert(data)
     phases = np.angle(data)
 
     # Compute the mean of the complex phases
