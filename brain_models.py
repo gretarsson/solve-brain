@@ -3,7 +3,7 @@ import symengine as sym
 import time as timer
 from scipy.integrate import solve_ivp
 from scipy.spatial.distance import hamming
-from .brain_analysis import PLI, compute_phase_coherence, butter_bandpass_filter
+from .brain_analysis import PLI, compute_phase_coherence, butter_bandpass_filter, PLI_from_complex, compute_phase_coherence_from_complex
 from scipy.stats import pearsonr
 from numba import jit
 from math import pi
