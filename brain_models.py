@@ -717,11 +717,13 @@ def error_FC(var, DE, W, tspan, step, atol, rtol, cutoff, band, exp_PLI, \
 
     # solve DE
     sol = solve_dde(DE, y0, W, t_span=tspan, step=step, atol=atol, rtol=rtol, \
-             parameterss=var_dde, discard_y=True, cutoff=cutoff)
+             parameterss=var_dde, discard_y=False, cutoff=cutoff)
 
     # extract solution
     x = sol[0]['x']
+    y = sol[0]['y']
     t = sol[0]['t']
+    compl_signal = x + 1j * y
 
     # sampling rate
     fs = 1/(t[1]-t[0])
@@ -730,7 +732,8 @@ def error_FC(var, DE, W, tspan, step, atol, rtol, cutoff, band, exp_PLI, \
     x = butter_bandpass_filter(x, band[0], band[1], fs)
 
     # compute PLI matrix, normalize, and flatten
-    sim_PLI = PLI(x)
+    #sim_PLI = PLI(x)
+    sim_PLI = PLI_from_complex(compl_signal)
     if not objective == 'jaccard':
         if normalize_sim:
             sim_max = np.amax(sim_PLI)
@@ -795,7 +798,8 @@ def error_FC(var, DE, W, tspan, step, atol, rtol, cutoff, band, exp_PLI, \
     if objective == 'jaccard':
         r = jaccard_index(flat_sim_PLI, flat_exp_PLI, threshold_exp)    
 
-    coherence_error = par_coherence * np.abs(np.mean(compute_phase_coherence(x)) - mean_coherence)
+    #coherence_error = par_coherence * np.abs(np.mean(compute_phase_coherence(x)) - mean_coherence)
+    coherence_error = par_coherence * np.abs(np.mean(compute_phase_coherence_from_complex(compl_signal)) - mean_coherence)
 
     # return negative pearson correlation (maximization)
     return -r+zeros+coherence_error
