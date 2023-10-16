@@ -693,7 +693,7 @@ def jaccard_index(arr1, arr2, perc):
 #   exp_PLI -   np array, experimental functional connectivity to compare
 # --------------------------------------------------------------------------
 def error_FC(var, DE, W, tspan, step, atol, rtol, cutoff, band, exp_PLI, \
-                normalize_exp, threshold_exp, normalize_sim, threshold_sim, zero_scale, y0, inds, objective, freq_normal, mean_coherence):
+                normalize_exp, threshold_exp, normalize_sim, threshold_sim, zero_scale, y0, inds, objective, freq_normal, mean_coherence, par_coherence):
     # find N
     N = np.array(W).shape[0]
     # pack variable for solve_dde
@@ -795,7 +795,7 @@ def error_FC(var, DE, W, tspan, step, atol, rtol, cutoff, band, exp_PLI, \
     if objective == 'jaccard':
         r = jaccard_index(flat_sim_PLI, flat_exp_PLI, threshold_exp)    
 
-    coherence_error = 5 * np.abs(np.mean(compute_phase_coherence(x)) - mean_coherence)
+    coherence_error = par_coherence * np.abs(np.mean(compute_phase_coherence(x)) - mean_coherence)
 
     # return negative pearson correlation (maximization)
     return -r+zeros+coherence_error
