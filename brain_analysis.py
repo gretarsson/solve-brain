@@ -61,12 +61,11 @@ def compute_phase_coherence(data):
     """
     # Compute the complex phases of the oscillators
     #phases = np.exp(1j * data)
-    phases = hilbert(data)
-    phases = np.angle(data)
-
-    # Compute the mean of the complex phases
-    mean_phase = np.mean(phases, axis=1)
-
+    hil = hilbert(data)
+    phases = np.angle(hil)
+    complex_phases = np.exp(1j * phases)
+    mean_phase = np.mean(complex_phases, axis=0)
+    
     # Compute the magnitude of the mean phase
     coherence_parameter = np.abs(mean_phase)
 
