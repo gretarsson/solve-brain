@@ -60,7 +60,8 @@ def compute_phase_coherence(data):
     float: The phase-coherence order parameter of the oscillators.
     """
     # Compute the complex phases of the oscillators
-    phases = np.exp(1j * data)
+    #phases = np.exp(1j * data)
+    phases = signal.hilbert(data)
 
     # Compute the mean of the complex phases
     mean_phase = np.mean(phases, axis=0)
