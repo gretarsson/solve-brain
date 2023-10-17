@@ -105,7 +105,7 @@ def compute_phase_coherence_old(data):
     #complex_phases = np.exp(1j * data)
     data = normalize_rows(data)
     complex_phases = np.exp(1j * data * pi)
-    mean_phase = np.mean(complex_phases, axis=0)
+    mean_phase = np.mean(complex_phases, axis=1)
     
     # Compute the magnitude of the mean phase
     coherence_parameter = np.abs(mean_phase)
