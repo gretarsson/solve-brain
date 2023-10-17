@@ -79,6 +79,26 @@ def PLI_from_complex(signal):
     # we're done
     return F
 
+def compute_phase_coherence_old(data):
+    """
+    Computes the phase-coherence order parameter of a 2D NumPy array of oscillators.
+
+    Parameters:
+    data (numpy.ndarray): The 2D NumPy array of oscillators, where each row is an oscillator and each column is a time domain.
+
+    Returns:
+    float: The phase-coherence order parameter of the oscillators.
+    """
+    # Compute the complex phases of the oscillators
+    #complex_phases = np.exp(1j * data)
+    complex_phases = np.exp(1j * data * 2*pi / np.amax(np.abs(data),axis=1))
+    mean_phase = np.mean(complex_phases, axis=1)
+    
+    # Compute the magnitude of the mean phase
+    coherence_parameter = np.abs(mean_phase)
+
+    return coherence_parameter
+
 def compute_phase_coherence(data):
     """
     Computes the phase-coherence order parameter of a 2D NumPy array of oscillators.

@@ -799,7 +799,8 @@ def error_FC(var, DE, W, tspan, step, atol, rtol, cutoff, band, exp_PLI, \
         r = jaccard_index(flat_sim_PLI, flat_exp_PLI, threshold_exp)    
 
     #coherence_error = par_coherence * np.abs(np.mean(compute_phase_coherence(x)) - mean_coherence)
-    coherence_error = par_coherence * np.abs(np.mean(compute_phase_coherence_from_complex(compl_signal)) - mean_coherence)
+    #coherence_error = par_coherence * np.abs(np.mean(compute_phase_coherence_from_complex(compl_signal)) - mean_coherence)
+    coherence_error = par_coherence * np.abs(np.mean(compute_phase_coherence_old(x)) - mean_coherence)
 
     # return negative pearson correlation (maximization)
     return -r+zeros+coherence_error
