@@ -103,7 +103,7 @@ def compute_phase_coherence_old(data):
     """
     # Compute the complex phases of the oscillators
     #complex_phases = np.exp(1j * data)
-    complex_phases = normalize_row(complex_phases)
+    complex_phases = normalize_rows(complex_phases)
     complex_phases = np.exp(1j * data * 2*pi)
     mean_phase = np.mean(complex_phases, axis=1)
     
