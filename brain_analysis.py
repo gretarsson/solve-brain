@@ -80,6 +80,17 @@ def PLI_from_complex(signal):
     # we're done
     return F
 
+
+# verified
+def normalize_rows(matrix):
+    # Calculate the largest absolute value for each row
+    max_abs_values = np.max(np.abs(matrix), axis=1, keepdims=True)
+    
+    # Divide each row by its respective max absolute value
+    normalized_matrix = matrix / max_abs_values
+
+    return normalized_matrix
+
 def compute_phase_coherence_old(data):
     """
     Computes the phase-coherence order parameter of a 2D NumPy array of oscillators.
@@ -92,7 +103,8 @@ def compute_phase_coherence_old(data):
     """
     # Compute the complex phases of the oscillators
     #complex_phases = np.exp(1j * data)
-    complex_phases = np.exp(1j * data * 2*pi / np.amax(np.abs(data),axis=1))
+    complex_phases = normalize_row(complex_phases)
+    complex_phases = np.exp(1j * data * 2*pi)
     mean_phase = np.mean(complex_phases, axis=1)
     
     # Compute the magnitude of the mean phase
