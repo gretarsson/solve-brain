@@ -491,83 +491,83 @@ def solve_dde(DDE, y0, W, t_span=(0,10), step=10**-4, atol=10**-6, rtol=10**-4, 
         warnings.simplefilter("ignore")
         from jitcdde import jitcdde, y, t
 
-    # check if parameter array given
-    if parameterss is False:
-        parameterss = np.array([[]])
-        parN, num_par = (1, 0)
-    else:
-        parameterss = np.array( parameterss )
-        parN, num_par = parameterss.shape
-
-    # initialize 
-    sols = np.empty((parN), dtype='object')
-
-    # set number of nodes and flatten values of adjacency matrix
-    N = W.shape[0]
-    flat_num_W = list(W.flatten())
-
-    # set integration parameters
-    DDE.set_integration_parameters(rtol=rtol,atol=atol)
-    #DDE.set_integration_parameters(rtol=1e12,atol=1e12, first_step=10**-4, max_step=10**-4, min_step=10**-4)  # test fixed step size
-
-    # start clock
-    if display:
-        start = timer.time()
-
-    # loop over parameters
-    for i in range(parN):
-        # add numeric adj. matrix and add model parameters
-        parameters = [*flat_num_W, *parameterss[i,:]]
-
-        # set past history
-        DDE.constant_past(y0, time=0.0)
-
-        # set model parameters (only if set by user)
-        try:
-            DDE.set_parameters(parameters)
-        except:
-            print(f'\nThe number of implicit parameters is {num_par}. Make sure that this is reflected in the JiTCDDE compilation.\n')
-            return None, None
-
-        # handle initial discontinuities
-        DDE.adjust_diff()
-        #DDE.step_on_discontinuities(propagations=1)
-        #DDE.integrate_blindly(0.01, step=step)
-
-        # solve
-        data = []
-        t = []
-        for time in np.arange(DDE.t, DDE.t+t_span[1],  step):
-            data.append( DDE.integrate(time) )
-            t.append(time)
-
-        # organize data
-        data = np.array(data)
-        data = np.transpose(data)
-        t = np.array(t)
-
-        # store solution as dictionary, potentially discard y and cut off transients
-        sol = {}
-        sol['x'] = data[0:2*N:2,t>cutoff]
-        if discard_y:
-            sol['y'] = []
+        # check if parameter array given
+        if parameterss is False:
+            parameterss = np.array([[]])
+            parN, num_par = (1, 0)
         else:
-            sol['y'] = data[1:2*N:2,t>cutoff]
-        sol['t'] = t[t>cutoff]
+            parameterss = np.array( parameterss )
+            parN, num_par = parameterss.shape
 
-        # purge past history
-        DDE.purge_past()
+        # initialize 
+        sols = np.empty((parN), dtype='object')
 
-        # store solution in grid array
-        sols[i] = sol
+        # set number of nodes and flatten values of adjacency matrix
+        N = W.shape[0]
+        flat_num_W = list(W.flatten())
 
-    # display simulation time
-    if display:
-        end = timer.time()
-        print(f'\nElapsed time for all DDE simulations: {end-start} seconds\nElapsed time per DDE simulation: {round((end-start)/parN,4)}')
-    
-    # we're done
-    return sols 
+        # set integration parameters
+        DDE.set_integration_parameters(rtol=rtol,atol=atol)
+        #DDE.set_integration_parameters(rtol=1e12,atol=1e12, first_step=10**-4, max_step=10**-4, min_step=10**-4)  # test fixed step size
+
+        # start clock
+        if display:
+            start = timer.time()
+
+        # loop over parameters
+        for i in range(parN):
+            # add numeric adj. matrix and add model parameters
+            parameters = [*flat_num_W, *parameterss[i,:]]
+
+            # set past history
+            DDE.constant_past(y0, time=0.0)
+
+            # set model parameters (only if set by user)
+            try:
+                DDE.set_parameters(parameters)
+            except:
+                print(f'\nThe number of implicit parameters is {num_par}. Make sure that this is reflected in the JiTCDDE compilation.\n')
+                return None, None
+
+            # handle initial discontinuities
+            DDE.adjust_diff()
+            #DDE.step_on_discontinuities(propagations=1)
+            #DDE.integrate_blindly(0.01, step=step)
+
+            # solve
+            data = []
+            t = []
+            for time in np.arange(DDE.t, DDE.t+t_span[1],  step):
+                data.append( DDE.integrate(time) )
+                t.append(time)
+
+            # organize data
+            data = np.array(data)
+            data = np.transpose(data)
+            t = np.array(t)
+
+            # store solution as dictionary, potentially discard y and cut off transients
+            sol = {}
+            sol['x'] = data[0:2*N:2,t>cutoff]
+            if discard_y:
+                sol['y'] = []
+            else:
+                sol['y'] = data[1:2*N:2,t>cutoff]
+            sol['t'] = t[t>cutoff]
+
+            # purge past history
+            DDE.purge_past()
+
+            # store solution in grid array
+            sols[i] = sol
+
+        # display simulation time
+        if display:
+            end = timer.time()
+            print(f'\nElapsed time for all DDE simulations: {end-start} seconds\nElapsed time per DDE simulation: {round((end-start)/parN,4)}')
+        
+        # we're done
+        return sols 
 
 # ----------------------------------------------------------------
 # solve DDE 
