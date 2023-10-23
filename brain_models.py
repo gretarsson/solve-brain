@@ -7,6 +7,7 @@ from .brain_analysis import PLI, compute_phase_coherence, butter_bandpass_filter
 from scipy.stats import pearsonr
 from numba import jit
 from math import pi
+import warnings
 
 # -----------------------------------------------
 # in this module, we include functions to compile
