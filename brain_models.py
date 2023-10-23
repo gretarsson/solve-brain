@@ -8,7 +8,7 @@ from scipy.stats import pearsonr
 from numba import jit
 from math import pi
 import warnings
-warnings.filterwarnings("ignore", message="divide by zero encountered in divide")
+warnings.filterwarnings("ignore", message="Differential equation does not include a delay term.")
 
 # -----------------------------------------------
 # in this module, we include functions to compile
