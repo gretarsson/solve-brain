@@ -487,7 +487,6 @@ def compile_hopf_diff(N, a=False, b=False, delays=False, t_span=(0,10), \
 # ----------------------------------------------------------------
 def solve_dde(DDE, y0, W, t_span=(0,10), step=10**-4, atol=10**-6, rtol=10**-4, parameterss=False, display=False, discard_y=False, cutoff=0):
     # import must be within function (or else t will not be caught)
-    from jitcdde import jitcdde, y, t
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         from jitcdde import jitcdde, y, t
