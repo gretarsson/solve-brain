@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.signal import hilbert
 from scipy.signal import butter, sosfilt, sosfreqz
+from scipy.stats import pearsonr
 import matplotlib.pyplot as plt
 import seaborn as sns
 from math import pi
@@ -100,10 +101,10 @@ def amplitude_coupling_from_complex(signal):
     # compute MPCs for each node pair
     for c in range(N):
         for r in range(c+1,N):
-            pli_i, _ = pearsonr(phases[r,:], phases[c,:])
+            ampl_i, _ = pearsonr(phases[r,:], phases[c,:])
 
-            F[r,c] = pli_i
-            F[c,r] = pli_i
+            F[r,c] = ampl_i
+            F[c,r] = ampl_i
     
     # we're done
     return F
