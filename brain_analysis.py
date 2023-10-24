@@ -101,7 +101,7 @@ def amplitude_coupling_from_complex(signal):
     # compute MPCs for each node pair
     for c in range(N):
         for r in range(c+1,N):
-            ampl_i, _ = pearsonr(phases[r,:], phases[c,:])
+            ampl_i, _ = pearsonr(ampl[r,:], ampl[c,:])
 
             F[r,c] = ampl_i
             F[c,r] = ampl_i
