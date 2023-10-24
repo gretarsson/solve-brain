@@ -80,6 +80,33 @@ def PLI_from_complex(signal):
     # we're done
     return F
 
+def amplitude_coupling_from_complex(signal):
+    """
+    Computes the ampltiude coupling of a given signal.
+
+    Parameters:
+    signal (numpy.ndarray): The input signal (array-like).
+
+    Returns:
+    numpy.ndarray: The functional matrix representing Pearson correlation of amplitudes between pairs of nodes.
+    """
+    # find amplitude of Hilbert-transformed signal
+    ampl = np.abs(signal)
+
+    # initialize functional matrix (lower triangular)
+    N, T = signal.shape  
+    F = np.zeros((N,N))
+
+    # compute MPCs for each node pair
+    for c in range(N):
+        for r in range(c+1,N):
+            pli_i, _ = pearsonr(phases[r,:], phases[c,:])
+
+            F[r,c] = pli_i
+            F[c,r] = pli_i
+    
+    # we're done
+    return F
 
 # verified
 def normalize_rows(matrix):
