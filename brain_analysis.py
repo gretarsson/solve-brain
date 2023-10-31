@@ -275,6 +275,60 @@ def bandpower(data, sf, band, window_sec=None, relative=False, modified=False):
     return bp
 
 
+
+def frequency_peaks(data, sf, band=None, window_sec=None, tol=10**-3, modified=False):
+    """Compute the average power of the signal x in a specific frequency band.
+
+    Parameters
+    ----------
+    data : 1d-array
+        Input signal in the time-domain.
+    sf : float
+        Sampling frequency of the data.
+    band : list
+        Lower and upper frequencies of the band of interest.
+    window_sec : float
+        Length of each window in seconds.
+        If None, window_sec = (1 / min(band)) * 2
+    tol : float
+        tolerance for ignoring maximum peak and set frequency to zero
+
+    Return
+    ------
+    peak : float
+        Largest PSD peak in frequency.
+    """
+    from scipy.signal import welch, periodogram
+    from scipy.integrate import simps
+    band = np.asarray(band)
+    low, high = band
+
+    # Compute the (modified) periodogram 
+    if modified:
+        # Define window length
+        if window_sec is not None:
+            nperseg = window_sec * sf
+        else:
+            nperseg = (2/low) * sf
+        freqs, psd = welch(data, sf, nperseg=nperseg)
+    else:
+        freqs, psd = periodogram(data, sf)
+
+    # find peaks in psd
+    if band.any():
+        low, high = band
+        filtered = np.array([i for i in range(len(freqs)) if (freqs[i] > low and freqs[i] < high)])
+        psd = psd[filtered]
+        freqs = freqs[filtered]
+
+    max_peak = np.argmax(abs(psd))
+    if max_peak is None or abs(psd[max_peak]) < tol:
+        freq_peak = float("NaN")
+    else:
+        freq_peak = freqs[max_peak]
+    # we're done
+    return freq_peak
+
 # --------------------------------------
 # plot average functional connectomes
 # --------------------------------------
