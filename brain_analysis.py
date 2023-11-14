@@ -334,7 +334,7 @@ def frequency_peaks(data, sf, band=None, window_sec=None, tol=10**-3, modified=F
 # --------------------------------------
 def plot_functional_connectomes(avg_F, t_stamps=False, bands=[], region_names=False, \
         colours=False, regions=False, coordinates=False, vmax=False, title=False, \
-        edge_threshold='90.0%'):
+        edge_threshold='90.0%', vmin=0):
     from itertools import chain
     from nilearn import plotting
     from matplotlib.colors import ListedColormap
@@ -409,7 +409,7 @@ def plot_functional_connectomes(avg_F, t_stamps=False, bands=[], region_names=Fa
                     for i, ticklabel in enumerate(heatmap.yaxis.get_majorticklabels()):
                         ticklabel.set_color(node_colours[node_map[i]])
             else:
-                heatmap = sns.heatmap(F, vmin=0, vmax=vmax)
+                heatmap = sns.heatmap(F, vmin=vmin, vmax=vmax)
 
             # append figure to list of figures
             figs.append(fig)
