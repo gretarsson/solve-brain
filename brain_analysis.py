@@ -400,7 +400,7 @@ def plot_functional_connectomes(avg_F, t_stamps=False, bands=[], region_names=Fa
             # plot functional matrix as heatmap, either with regions names or without
             if region_names is not False:
                 heatmap = sns.heatmap(F, xticklabels=new_region_names, yticklabels=new_region_names, \
-                        vmin=0, vmax=vmax)
+                        vmin=vmin, vmax=vmax)
                 heatmap.set_xticklabels(heatmap.get_xmajorticklabels(), fontsize = 4)
                 heatmap.set_yticklabels(heatmap.get_ymajorticklabels(), fontsize = 4)
                 if colours is not False:
