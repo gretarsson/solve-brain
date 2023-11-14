@@ -428,7 +428,7 @@ def plot_functional_connectomes(avg_F, t_stamps=False, bands=[], region_names=Fa
 
                 brain_map = plotting.plot_connectome(F, coordinates, edge_threshold=edge_threshold, \
                          node_color=node_colours, \
-                        node_size=node_size, edge_cmap=cmap, edge_vmin=np.amin(F), edge_vmax=vmax, \
+                        node_size=node_size, edge_cmap=cmap, edge_vmin=np.amin(F[F>0]), edge_vmax=vmax, \
                         alpha=alpha_brain, colorbar=colorbar, edge_kwargs={'alpha':alpha_edge})
                 #brain_map.close() 
             # append figure to list of figures
