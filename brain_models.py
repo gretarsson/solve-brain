@@ -654,7 +654,8 @@ def solve_sde(SDE, y0, W, t_span=(0,10), step=10**-4, atol=10**-6, rtol=10**-4, 
     return sols 
 
 def threshold_matrix(A, perc):
-    A_flat = A.flatten()
+    Acopy = copy.copy(A)
+    A_flat = Acopy.flatten()
     A_flat = np.sort(A_flat)  # sort lowest to highest
     threshold_val = A_flat[int( perc * A_flat.size ) ]
     A[A < threshold_val] = 0
