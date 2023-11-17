@@ -7,6 +7,7 @@ from .brain_analysis import PLI, compute_phase_coherence, butter_bandpass_filter
 from scipy.stats import pearsonr
 from numba import jit
 from math import pi
+import copy
 import warnings
 warnings.filterwarnings("ignore", message="Differential equation does not include a delay term.")
 warnings.filterwarnings("ignore", message="The target time is smaller than the current time. No integration step will happen. The returned state will be extrapolated from the interpolating Hermite polynomial for the last integration step. You may see this because you try to integrate backwards in time, in which case you did something wrong. You may see this just because your sampling step is small, in which case there is no need to worry.")
